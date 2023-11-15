@@ -1,0 +1,24 @@
+{
+  "id": "storage_by_indexer",
+  "func": "get_storage_by_indexer",
+  "url": "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoquepor_re.asp?op_rel=Indexadores&Dt_ini=%s&Dt_fim=%s&op_exc=False&op_subInd=&Opcao=%s&Moeda=1",
+  "cols": [
+    "date",
+    "indexer",
+    "value_mrkt",
+    "value_treasury",
+    "value"
+  ],
+  "dtypes_from_scratch": {
+    "date": "character",
+    "indexer": "character",
+    "value_mrkt": "character",
+    "value_treasury": "character",
+    "value": "character"
+  },
+  "dtypes_from_to": {
+    "value_mrkt": "numeric",
+    "value_treasury": "numeric",
+    "value": "numeric"
+  }
+}
