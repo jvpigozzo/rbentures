@@ -378,19 +378,3 @@ get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
   df <- get_numeric_cols(df=df, num_cols = c(''))
   return(df)
 }
-
-get_numeric_cols(df=df, num_cols = 'V7')
-
-get_date_cols(df=df, date_cols = 'V4')
-
-
-
-
-df <- get_events(end_date=NULL, cetip_code = 'OENC11')
-tx = 3.9
-vna = 836.734
-amort = vna*(2.4390/100)
-rem = vna-amort
-fator = (((tx/100) + 1)^(3/252))^(3/3)
-rem-(rem*fator)
-
