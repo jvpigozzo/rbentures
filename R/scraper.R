@@ -14,7 +14,6 @@
 #' # Retrieve storage data for a specific date range
 #' storage_data <- get_storage_by_date(start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data
@@ -47,7 +46,6 @@ get_storage_by_date <- function(start_date = Sys.Date() - 5, end_date = Sys.Date
 #' # Retrieve storage data for a specific CETIP code and date range
 #' storage_data <- get_storage_by_cetip_code(cetip_code = "ABC123", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data CETIP code
@@ -82,7 +80,6 @@ get_storage_by_cetip_code <- function(cetip_code,
 #' # Retrieve storage data for a specific indexer and date range
 #' storage_data <- get_storage_by_indexer(indexer = "IPCA", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date, gsub
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data indexer
@@ -131,7 +128,6 @@ get_storage_by_indexer <- function(indexer = c("Prefixado","ANBID","BTN","DI","D
 #' # Retrieve storage data for a specific adjustment type and date range
 #' storage_data <- get_storage_by_value_adjustment(adjustment = "inflation", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date, gsub
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data value adjustment
@@ -187,7 +183,6 @@ get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest
 #' # Retrieve storage data for a specific shape and date range
 #' storage_data <- get_storage_by_shape(shape = "nominativa", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date, gsub
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data shape
@@ -245,7 +240,6 @@ get_storage_by_shape <- function(shape = c("nominativa","escritural"),
 #' # Retrieve trades data for a specific date range
 #' trades_data <- get_trades_by_date(start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance trades data
@@ -279,7 +273,6 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
 #' # Retrieve trades data for a specific CETIP code and date range
 #' trades_data <- get_trades_by_cetip_code(cetip_code = "ABC123", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance trades data CETIP code
@@ -310,7 +303,6 @@ get_trades_by_cetip_code <- function(cetip_code,
 #' # Retrieve information about registered coordinators
 #' coordinators_data <- get_registered_coordinators()
 #'
-#' @importFrom base startsWith
 #' @keywords debentures finance coordinators data
 #' @export
 get_registered_coordinators <- function(){
@@ -354,7 +346,6 @@ get_registered_coordinators <- function(){
 #' # Retrieve information about registered banks (bakers)
 #' banks_data <- get_registered_bakers()
 #'
-#' @importFrom base startsWith
 #' @keywords debentures finance banks bakers data
 #' @export
 get_registered_bakers <- function(){
@@ -397,7 +388,6 @@ get_registered_bakers <- function(){
 #' # Retrieve information about registered trustees
 #' trustees_data <- get_registered_trustees()
 #'
-#' @importFrom base startsWith
 #' @keywords debentures finance trustees data
 #' @export
 get_registered_trustees <- function(){
@@ -446,7 +436,6 @@ get_registered_trustees <- function(){
 #' # Retrieve issuing prices data for a specific date range
 #' issuing_prices_data <- get_issuing_prices(start_date = "2022-01-01", end_date = "2022-12-31")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance issuing prices data
@@ -486,7 +475,6 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
 #' # Retrieve duration data for a specific date range and CETIP code
 #' duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance duration data
@@ -528,7 +516,6 @@ get_duration <- function(start_date = Sys.Date()-21,
 #' # Retrieve events data for a specific date range, payment dates, and CETIP code
 #' events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "ABC123", event = "Juros")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance events data
@@ -577,7 +564,6 @@ get_events <- function(start_date = Sys.Date(),
 #' # Retrieve events prices data for a specific date range and CETIP code
 #' events_prices_data <- get_events_prices(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123", event = "Juros")
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance events prices data
@@ -619,7 +605,6 @@ get_events_prices <- function(start_date = Sys.Date()-21,
 #' # Retrieve issuing volume data for a specific date range and CVM instructions
 #' issuing_volume_data <- get_issuing_volume_by_date(start_date = "2022-01-01", end_date = "2022-12-31", date_type = "registering", cvm_instruction = c(400, 476))
 #'
-#' @importFrom base format, as.Date
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance issuing volume data
