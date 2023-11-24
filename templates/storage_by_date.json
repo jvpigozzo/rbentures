@@ -1,0 +1,35 @@
+{
+  "id": "storage_by_date",
+  "func": "get_storage_by_date",
+  "url": "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoqueporativo_e1.asp?dt_ini=%s&dt_fim=%s&ativo=&moeda=1&Op_exc=Nada&cab=s",
+  "cols": [
+    "date",
+    "issuer",
+    "cetip_code",
+    "strg_mrkt",
+    "value_mrkt",
+    "strg_treasury",
+    "value_treasury",
+    "strg",
+    "value"
+  ],
+  "dtypes_from_scratch": {
+    "date": "character",
+    "issuer": "character",
+    "cetip_code": "character",
+    "strg_mrkt": "character",
+    "value_mrkt": "character",
+    "strg_treasury": "character",
+    "value_treasury": "character",
+    "strg": "character",
+    "value": "character"
+  },
+  "dtypes_from_to": {
+    "strg_mrkt": "numeric",
+    "value_mrkt": "numeric",
+    "strg_treasury": "numeric",
+    "value_treasury": "numeric",
+    "strg": "numeric",
+    "value": "numeric"
+  }
+}
