@@ -13,14 +13,12 @@ get_date_cols(df, date_cols)
 }
 \value{
 Data frame with specified columns converted to Date format
-}
-\description{
-Takes a data frame and converts specified date columns to Date format using the specified date format.
-}
-\examples{
 \dontrun{
 # Example usage:
 data <- data.frame(date1 = c("01/01/2022", "02/01/2022"), date2 = c("03/01/2022", "04/01/2022"))
 date_data <- get_date_cols(data, c("date1", "date2"))
 }
+}
+\description{
+Takes a data frame and converts specified date columns to Date format using the specified date format.
 }
