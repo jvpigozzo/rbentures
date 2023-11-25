@@ -452,6 +452,10 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
   rows_to_skip <- 3
   rows_to_keep <- length(txt) - (rows_to_skip + 4)
   df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
+  df <- df[, 1:6]
+  num_cols <- c("V3", "V4", "V5", "V6")
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("issuing_date", "ticker", "par_value", "interest", "premium", "price")
   return(df)
 }
 
