@@ -496,6 +496,10 @@ get_duration <- function(start_date = Sys.Date()-21,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 7)
+  df <- df[c("V1","V2","V4","V6","V7")]
+  num_cols <- c("V7")
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("issuer", "ticker", "issuing_date", "maturity_date", "duration_years")
   return(df)
 }
 
