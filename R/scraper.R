@@ -26,7 +26,11 @@ get_storage_by_date <- function(start_date = Sys.Date() - 5, end_date = Sys.Date
   res <- request_data(url=url)
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
+  txt <- txt[1:(length(txt) - 2)]
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
+  num_cols <- c("V3", "V4", "V5", "V6", "V7", "V8")
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("issuer", "ticker", "qty_mkt", "vol_mkt", "qty_treasury", "vol_treasury", "qty", "vol", "situation")
   return(df)
 }
 
