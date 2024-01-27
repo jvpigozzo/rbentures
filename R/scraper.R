@@ -537,21 +537,22 @@ get_events <- function(start_date = Sys.Date(),
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/agenda_e.asp?emissor=&ativo=%s&evento=%s&dt_ini=%s&dt_fim=%s&dt_pgto_ini=%s&dt_pgto_fim=%s&Submit32.x=&Submit32.y="
   start_date <- ifelse(is.null(start_date),'',base::format(base::as.Date(start_date), "%d/%m/%Y"))
   end_date <- ifelse(is.null(end_date),'',base::format(base::as.Date(end_date), "%d/%m/%Y"))
-  url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code),
-                       ifelse(is.null(event), "", event),
-                       ifelse(is.null(start_date), "", start_date),
-                       ifelse(is.null(end_date), "", end_date),
-                       start_date, end_date,
-                       ifelse(is.null(payment_start_date), "", payment_start_date),
-                       ifelse(is.null(payment_end_date), "", payment_end_date))
-
+  url <- sprintf(url, ifelse(is.null(cetip_code), "", cetip_code),
+                 ifelse(is.null(event), "", event),
+                 ifelse(is.null(start_date), "", start_date),
+                 ifelse(is.null(end_date), "", end_date),
+                 ifelse(is.null(payment_start_date), "", payment_start_date),
+                 ifelse(is.null(payment_end_date), "", payment_end_date))
   res <- request_data(url=url)
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+  num_cols <- c("V7")
+  df <- df[c("V1","V2","V3","V4","V5","V6","V7","V8")]
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("event_date", "payment_date", "issuer", "ticker", "event", "type", "interest_perc", "liquidation")
   return(df)
 }
-
 
 
 #' Get Events Prices Data by Date Range
