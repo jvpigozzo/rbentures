@@ -32,3 +32,10 @@ You can install the development version of rbentures from
 # install.packages("devtools")
 devtools::install_github("jvpigozzo/rbentures")
 ```
+
+To install the package locally, first build the package and then install it:
+
+``` r
+devtools::build()
+devtools::install()
+```
