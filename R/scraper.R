@@ -55,9 +55,9 @@ get_storage_by_date <- function(start_date = Sys.Date() - 5, end_date = Sys.Date
 #' @keywords debentures finance storage data CETIP code
 #' @export
 get_storage_by_cetip_code <- function(cetip_code,
-                                      start_date = Sys.Date(),
+                                      start_date = Sys.Date() - 5,
                                       end_date = Sys.Date()){
-  url <- "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoqueporativo_e.asp?dt_ini=%s&dt_fim=%s&ativo=%s%20%20%20%20&moeda=1&Op_exc=False&cab="
+  url <- "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoqueporativo_e.asp?dt_ini=%s&dt_fim=%s&ativo=%s&moeda=1&Op_exc=False&cab="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date, cetip_code)
@@ -65,6 +65,10 @@ get_storage_by_cetip_code <- function(cetip_code,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
+  df <- df[c("V1", "V2", "V3", "V4", "V5", "V6", "V7")]
+  num_cols <- c("V2", "V3", "V4", "V5", "V6", "V7")
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("date", "qty_mkt", "vol_mkt", "qty_treasury", "vol_treasury", "qty", "vol")
   return(df)
 }
 
