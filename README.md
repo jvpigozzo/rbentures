@@ -8,8 +8,7 @@
 
 A debenture is a type of debt security issued by a company to raise
 capital from investors, promising to pay a fixed rate of interest over a
-specified period of time. **debentures.com.br** ([linked
-phrase](http://www.debentures.com.br/)) is a Brazilian website that
+specified period of time. **debentures.com.br** ([debentures](http://www.debentures.com.br/)) is a Brazilian website that
 provides information and resources related to debentures. In its website
 we can find a vast number of datasets regarding prices and transactions
 for debentures available such as:
