@@ -30,7 +30,7 @@ get_storage_by_date <- function(start_date = Sys.Date() - 5, end_date = Sys.Date
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
   num_cols <- c("V3", "V4", "V5", "V6", "V7", "V8")
   df <- get_numeric_cols(df, num_cols)
-  names(df) <- c("issuer", "ticker", "qty_mkt", "vol_mkt", "qty_treasury", "vol_treasury", "qty", "vol", "situation")
+  names(df) <- c("issuer", "ticker", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol", "situation")
   return(df)
 }
 
@@ -68,7 +68,7 @@ get_storage_by_cetip_code <- function(cetip_code,
   df <- df[c("V1", "V2", "V3", "V4", "V5", "V6", "V7")]
   num_cols <- c("V2", "V3", "V4", "V5", "V6", "V7")
   df <- get_numeric_cols(df, num_cols)
-  names(df) <- c("date", "qty_mkt", "vol_mkt", "qty_treasury", "vol_treasury", "qty", "vol")
+  names(df) <- c("date", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol")
   return(df)
 }
 
@@ -79,6 +79,9 @@ get_storage_by_cetip_code <- function(cetip_code,
 #' This function retrieves storage data from the Debentures website for a specified indexer and date range.
 #'
 #' @param indexer The indexer for the desired storage data. Defaults to various financial indexers.
+#'   Options include: Prefixado, ANBID, BTN, DI, DOLAR, FDS, IGP-DI, IGP-M, INPC, IPC,
+#'   IPC-FIPE, IPC-M, IPC-R, IPCA, PÓS, PRÉ, SELIC, SEM ÍNDICE, TBF, TJLP, TR, TR-REAL,
+#'   UFIR, US$ COMERCIAL.
 #' @param start_date The start date for retrieving storage data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving storage data. Defaults to the current date.
 #'
@@ -92,13 +95,44 @@ get_storage_by_cetip_code <- function(cetip_code,
 #'
 #' @keywords debentures finance storage data indexer
 #' @export
-get_storage_by_indexer <- function(indexer = c("Prefixado","ANBID","BTN","DI","DOLAR","FDS","IGP-DI","IGP-M","INPC","IPC","IPC-FIPE","IPC-M","IPC-R","IPCA","PÓS","PRÉ","SELIC","SEM ÍNDICE","TBF","TJLP","TR","TR-REAL","UFIR","US$ COMERCIAL"),
+get_storage_by_indexer <- function(indexer = NULL,
                                    start_date = Sys.Date()-5,
                                    end_date = Sys.Date()){
+
+  if (!indexer %in% c("Prefixado","ANBID","BTN","DI","DOLAR","FDS","IGP-DI","IGP-M","INPC","IPC","IPC-FIPE","IPC-M","IPC-R","IPCA","PÓS","PRÉ","SELIC","SEM ÍNDICE","TBF","TJLP","TR","TR-REAL","UFIR","US$ COMERCIAL")) {
+    stop("Invalid indexer selected.")
+  }
+  indexers <- list(
+    "Prefixado" = 101,
+    "ANBID" = 43,
+    "BTN" = 7,
+    "DI" = 3,
+    "DOLAR" = 5,
+    "FDS" = 21,
+    "IGP-DI" = 10,
+    "IGP-M" = 9,
+    "INPC" = 16,
+    "IPC" = 6,
+    "IPC-FIPE" = 26,
+    "IPC-M" = 25,
+    "IPC-R" = 22,
+    "IPCA" = 18,
+    "PÓS" = 46,
+    "PRÉ" = 45,
+    "SELIC" = 1,
+    "SEM ÍNDICE" = 0,
+    "TBF" = 24,
+    "TJLP" = 23,
+    "TR" = 20,
+    "TR-REAL" = 11,
+    "UFIR" = 2,
+    "US$ COMERCIAL" = 15
+  )
+  indexer_code <- indexers[[indexer]]
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoquepor_re.asp?op_rel=Indexadores&Dt_ini=%s&Dt_fim=%s&op_exc=False&op_subInd=&Opcao=%s&Moeda=1"
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
-  url <- base::sprintf(url, start_date, end_date, indexer)
+  url <- base::sprintf(url, start_date, end_date, indexer_code)
   res <- request_data(url=url)
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
@@ -112,14 +146,17 @@ get_storage_by_indexer <- function(indexer = c("Prefixado","ANBID","BTN","DI","D
       values <- base::strsplit(txt[i+1], "\t")[[1]]
       row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
                         indexer = indexer,
-                        value_mrkt = values[2],
-                        value_treasury = values[3],
-                        value = values[4])
+                        vol_mrkt = values[2],
+                        vol_treasury = values[3],
+                        vol = values[4])
       df <- rbind(df, row)
     }
   }
+  num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+  df <- get_numeric_cols(df, num_cols)
   return(df)
 }
+
 
 
 #' Get Storage Data by Value Adjustment Type and Date Range
