@@ -6,7 +6,7 @@
 \usage{
 get_storage_by_cetip_code(
   cetip_code,
-  start_date = Sys.Date(),
+  start_date = Sys.Date() - 5,
   end_date = Sys.Date()
 )
 }

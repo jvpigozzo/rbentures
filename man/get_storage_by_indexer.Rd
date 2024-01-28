@@ -5,15 +5,16 @@
 \title{Get Storage Data by Indexer and Date Range}
 \usage{
 get_storage_by_indexer(
-  indexer = c("Prefixado", "ANBID", "BTN", "DI", "DOLAR", "FDS", "IGP-DI", "IGP-M",
-    "INPC", "IPC", "IPC-FIPE", "IPC-M", "IPC-R", "IPCA", "PÓS", "PRÉ", "SELIC",
-    "SEM ÍNDICE", "TBF", "TJLP", "TR", "TR-REAL", "UFIR", "US$ COMERCIAL"),
+  indexer = NULL,
   start_date = Sys.Date() - 5,
   end_date = Sys.Date()
 )
 }
 \arguments{
-\item{indexer}{The indexer for the desired storage data. Defaults to various financial indexers.}
+\item{indexer}{The indexer for the desired storage data. Defaults to various financial indexers.
+Options include: Prefixado, ANBID, BTN, DI, DOLAR, FDS, IGP-DI, IGP-M, INPC, IPC,
+IPC-FIPE, IPC-M, IPC-R, IPCA, PÓS, PRÉ, SELIC, SEM ÍNDICE, TBF, TJLP, TR, TR-REAL,
+UFIR, US$ COMERCIAL.}
 
 \item{start_date}{The start date for retrieving storage data. Defaults to 5 days ago from the current date.}
 
