@@ -665,9 +665,12 @@ get_events_prices <- function(start_date = Sys.Date()-21,
 #' @export
 get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
                                        end_date = Sys.Date()-1,
-                                       date_type = c('issuing','registering'),
+                                       date_type = 'issuing',
                                        cvm_instruction = c(400, 476),
                                        as = c("tibble", "xts", "ts", "data.frame", "text")){
+  if (!date_type %in% c("issuing","registering")) {
+    stop("Invalid date type selected.")
+  }
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/volume/volumeporperiodo_e.asp?op_exc=False&emissao=%s&dt_ini=%s&dt_fim=%s&ICVM=%s&moeda=1&Submit3.x=&Submit3.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
@@ -678,6 +681,7 @@ get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
   rows_to_skip <- 2
   rows_to_keep <- length(txt) - (rows_to_skip)
   df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- get_numeric_cols(df=df, num_cols = c(''))
+  df <- get_numeric_cols(df=df, num_cols = c("V7"))
+  names(df) <- c("ticker", "issuer", "situation", "issuing_date", "registering_date_snd", "registering_date_cvm", "vol")
   return(df)
 }
