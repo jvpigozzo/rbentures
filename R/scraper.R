@@ -626,6 +626,13 @@ get_events_prices <- function(start_date = Sys.Date()-21,
                               end_date = Sys.Date(),
                               cetip_code = NULL,
                               event = NULL){
+  if (!is.null(event) && !event %in% c("Juros", "Amortização", "Prêmio")) {
+    stop("Invalid event selected.")
+  }
+  event <- list(
+    "Juros" = 1,
+    "Amortização" = 11,
+    "Prêmio" = 3)
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/pudeeventos_e.asp?op_exc=False&emissor=&ativo=%s&dt_ini=%s&dt_fim=%s&evento=%s&Submit.x=&Submit.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
@@ -634,6 +641,10 @@ get_events_prices <- function(start_date = Sys.Date()-21,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+  df <- df[c("V1","V2","V3","V4","V5","V6")]
+  num_cols <- c("V4")
+  df <- get_numeric_cols(df, num_cols)
+  names(df) <- c("event_date", "ticker", "event", "price", "situation", "liquidation")
   return(df)
 
 }
