@@ -81,6 +81,6 @@ get_numeric_cols <- function(df, num_cols){
 #' }
 get_date_cols <- function(df, date_cols){
   df <- df |>
-    dplyr::mutate_at(dplyr::vars(dplyr::matches(date_cols)), ~as.Date(., format = "%d/%m/%Y"))
+    dplyr::mutate_at(dplyr::vars(dplyr::matches("^date_cols$")), ~as.Date(., format = "%d/%m/%Y"))
   return(df)
 }
