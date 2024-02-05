@@ -67,7 +67,9 @@ get_storage_by_cetip_code <- function(cetip_code,
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
   df <- df[c("V1", "V2", "V3", "V4", "V5", "V6", "V7")]
   num_cols <- c("V2", "V3", "V4", "V5", "V6", "V7")
+  date_cols <- c("V1")
   df <- get_numeric_cols(df, num_cols)
+  df <- get_date_cols(df, date_cols)
   names(df) <- c("date", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol")
   return(df)
 }
@@ -299,6 +301,7 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+  df <- get_date_cols(df, date_cols=c("V1"))
   return(df)
 }
 
@@ -333,6 +336,7 @@ get_trades_by_cetip_code <- function(cetip_code,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+  df <- get_date_cols(df, date_cols=c("V1"))
   return(df)
 }
 
@@ -498,8 +502,8 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
   rows_to_keep <- length(txt) - (rows_to_skip + 4)
   df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
   df <- df[, 1:6]
-  num_cols <- c("V3", "V4", "V5", "V6")
-  df <- get_numeric_cols(df, num_cols)
+  df <- get_numeric_cols(df, num_cols=c("V3", "V4", "V5", "V6"))
+  df <- get_date_cols(df, date_cols=c("V1"))
   names(df) <- c("issuing_date", "ticker", "par_value", "interest", "premium", "price")
   return(df)
 }
@@ -542,8 +546,8 @@ get_duration <- function(start_date = Sys.Date()-21,
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 7)
   df <- df[c("V1","V2","V4","V6","V7")]
-  num_cols <- c("V7")
-  df <- get_numeric_cols(df, num_cols)
+  df <- get_numeric_cols(df, num_cols=c("V7"))
+  df <- get_date_cols(df, date_cols=c("V4","V6"))
   names(df) <- c("issuer", "ticker", "issuing_date", "maturity_date", "duration_years")
   return(df)
 }
@@ -592,9 +596,9 @@ get_events <- function(start_date = Sys.Date(),
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
-  num_cols <- c("V7")
   df <- df[c("V1","V2","V3","V4","V5","V6","V7","V8")]
-  df <- get_numeric_cols(df, num_cols)
+  df <- get_numeric_cols(df, num_cols=c("V7"))
+  df <- get_date_cols(df, date_cols=c("V1","V2"))
   names(df) <- c("event_date", "payment_date", "issuer", "ticker", "event", "type", "interest_perc", "liquidation")
   return(df)
 }
@@ -626,6 +630,13 @@ get_events_prices <- function(start_date = Sys.Date()-21,
                               end_date = Sys.Date(),
                               cetip_code = NULL,
                               event = NULL){
+  if (!is.null(event) && !event %in% c("Juros", "Amortização", "Prêmio")) {
+    stop("Invalid event selected.")
+  }
+  event <- list(
+    "Juros" = 1,
+    "Amortização" = 11,
+    "Prêmio" = 3)
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/pudeeventos_e.asp?op_exc=False&emissor=&ativo=%s&dt_ini=%s&dt_fim=%s&evento=%s&Submit.x=&Submit.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
@@ -634,6 +645,10 @@ get_events_prices <- function(start_date = Sys.Date()-21,
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+  df <- df[c("V1","V2","V3","V4","V5","V6")]
+  df <- get_numeric_cols(df, num_cols=c("V4"))
+  df <- get_date_cols(df, date_cols=c("V1"))
+  names(df) <- c("event_date", "ticker", "event", "price", "situation", "liquidation")
   return(df)
 
 }
@@ -665,9 +680,12 @@ get_events_prices <- function(start_date = Sys.Date()-21,
 #' @export
 get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
                                        end_date = Sys.Date()-1,
-                                       date_type = c('issuing','registering'),
+                                       date_type = 'issuing',
                                        cvm_instruction = c(400, 476),
                                        as = c("tibble", "xts", "ts", "data.frame", "text")){
+  if (!date_type %in% c("issuing","registering")) {
+    stop("Invalid date type selected.")
+  }
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/volume/volumeporperiodo_e.asp?op_exc=False&emissao=%s&dt_ini=%s&dt_fim=%s&ICVM=%s&moeda=1&Submit3.x=&Submit3.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
@@ -678,6 +696,8 @@ get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
   rows_to_skip <- 2
   rows_to_keep <- length(txt) - (rows_to_skip)
   df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- get_numeric_cols(df=df, num_cols = c(''))
+  df <- get_numeric_cols(df=df, num_cols = c("V7"))
+  df <- get_date_cols(df=df, date_cols = c("V4","V5","V6"))
+  names(df) <- c("ticker", "issuer", "situation", "issuing_date", "registering_date_snd", "registering_date_cvm", "vol")
   return(df)
 }
