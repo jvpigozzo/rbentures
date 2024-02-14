@@ -232,7 +232,7 @@ get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest
 #'
 #' @keywords debentures finance storage data shape
 #' @export
-get_storage_by_shape <- function(shape = c("nominativa","escritural"),
+get_storage_by_shape <- function(shape = "nominativa",
                                  start_date = Sys.Date()-5,
                                  end_date = Sys.Date()){
 
@@ -264,6 +264,8 @@ get_storage_by_shape <- function(shape = c("nominativa","escritural"),
       df <- rbind(df, row)
     }
   }
+  num_cols <- c("value_mrkt", "value_treasury", "value")
+  df <- get_numeric_cols(df, num_cols)
   return(df)
 }
 
