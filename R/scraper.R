@@ -177,7 +177,7 @@ get_storage_by_indexer <- function(indexer = NULL,
 #'
 #' @keywords debentures finance storage data value adjustment
 #' @export
-get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest"),
+get_storage_by_value_adjustment <- function(adjustment = "inflation",
                                             start_date = Sys.Date()-5,
                                             end_date = Sys.Date()){
 
@@ -209,6 +209,8 @@ get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest
       df <- rbind(df, row)
     }
   }
+  num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+  df <- get_numeric_cols(df, num_cols)
   return(df)
 }
 
