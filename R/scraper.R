@@ -304,6 +304,7 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
   df <- get_date_cols(df, date_cols=c("V1"))
+  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
   return(df)
 }
 
@@ -339,6 +340,7 @@ get_trades_by_cetip_code <- function(cetip_code,
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
   df <- get_date_cols(df, date_cols=c("V1"))
+  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
   return(df)
 }
 
