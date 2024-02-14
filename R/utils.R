@@ -58,13 +58,13 @@ get_request_content <- function(res, encoding = "latin1"){
 #' }
 get_numeric_cols <- function(df, num_cols){
   df <- df |>
+    dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), ~gsub('[[:alpha:]]', '', .)) |>
     dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), ~gsub('[.]', '', .)) |>
     dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), ~gsub('[-]', '', .)) |>
-    dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), ~gsub('[,]', '.', .))|>
+    dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), ~gsub('[,]', '.', .)) |>
     dplyr::mutate_at(dplyr::vars(dplyr::matches(num_cols)), as.numeric)
   return(df)
 }
-
 
 
 #' Convert specified columns to Date format
