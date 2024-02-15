@@ -2,8 +2,7 @@
 #'
 #' This function retrieves storage data from the Debentures website for a specified date range.
 #'
-#' @param start_date The start date for retrieving storage data. Defaults to 5 days ago from the current date.
-#' @param end_date The end date for retrieving storage data. Defaults to the current date.
+#' @param date Date for retrieving storage data. Defaults to 5 days ago from the current date.
 #'
 #' @return A data frame containing the storage data for the specified date range.
 #'
@@ -11,18 +10,17 @@
 #' # Retrieve storage data for the last week
 #' storage_data <- get_storage_by_date()
 #'
-#' # Retrieve storage data for a specific date range
-#' storage_data <- get_storage_by_date(start_date = "2022-01-01", end_date = "2022-12-31")
+#' # Retrieve storage data for a specific date
+#' storage_data <- get_storage_by_date(date = "2022-01-01")
 #'
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance storage data
 #' @export
-get_storage_by_date <- function(start_date = Sys.Date() - 5, end_date = Sys.Date()){
+get_storage_by_date <- function(date = Sys.Date() - 5){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoqueporativo_e1.asp?dt_ini=%s&dt_fim=%s&ativo=&moeda=1&Op_exc=Nada&cab=s"
-  start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
-  end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
-  url <- base::sprintf(url, start_date, end_date)
+  date <- base::format(base::as.Date(date), "%d/%m/%Y")
+  url <- base::sprintf(url, date, date)
   res <- request_data(url=url)
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
@@ -179,7 +177,7 @@ get_storage_by_indexer <- function(indexer = NULL,
 #'
 #' @keywords debentures finance storage data value adjustment
 #' @export
-get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest"),
+get_storage_by_value_adjustment <- function(adjustment = "inflation",
                                             start_date = Sys.Date()-5,
                                             end_date = Sys.Date()){
 
@@ -211,6 +209,8 @@ get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest
       df <- rbind(df, row)
     }
   }
+  num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+  df <- get_numeric_cols(df, num_cols)
   return(df)
 }
 
@@ -234,7 +234,7 @@ get_storage_by_value_adjustment <- function(adjustment = c("inflation","interest
 #'
 #' @keywords debentures finance storage data shape
 #' @export
-get_storage_by_shape <- function(shape = c("nominativa","escritural"),
+get_storage_by_shape <- function(shape = "nominativa",
                                  start_date = Sys.Date()-5,
                                  end_date = Sys.Date()){
 
@@ -266,6 +266,8 @@ get_storage_by_shape <- function(shape = c("nominativa","escritural"),
       df <- rbind(df, row)
     }
   }
+  num_cols <- c("value_mrkt", "value_treasury", "value")
+  df <- get_numeric_cols(df, num_cols)
   return(df)
 }
 
@@ -302,6 +304,8 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
   df <- get_date_cols(df, date_cols=c("V1"))
+  df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
+  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
   return(df)
 }
 
@@ -337,6 +341,8 @@ get_trades_by_cetip_code <- function(cetip_code,
   txt <- base::readLines(base::textConnection(content))
   df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
   df <- get_date_cols(df, date_cols=c("V1"))
+  df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
+  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
   return(df)
 }
 

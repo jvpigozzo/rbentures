@@ -4,12 +4,10 @@
 \alias{get_storage_by_date}
 \title{Get Storage Data by Date Range}
 \usage{
-get_storage_by_date(start_date = Sys.Date() - 5, end_date = Sys.Date())
+get_storage_by_date(date = Sys.Date() - 5)
 }
 \arguments{
-\item{start_date}{The start date for retrieving storage data. Defaults to 5 days ago from the current date.}
-
-\item{end_date}{The end date for retrieving storage data. Defaults to the current date.}
+\item{date}{Date for retrieving storage data. Defaults to 5 days ago from the current date.}
 }
 \value{
 A data frame containing the storage data for the specified date range.
@@ -21,8 +19,8 @@ This function retrieves storage data from the Debentures website for a specified
 # Retrieve storage data for the last week
 storage_data <- get_storage_by_date()
 
-# Retrieve storage data for a specific date range
-storage_data <- get_storage_by_date(start_date = "2022-01-01", end_date = "2022-12-31")
+# Retrieve storage data for a specific date
+storage_data <- get_storage_by_date(date = "2022-01-01")
 
 }
 \keyword{data}
