@@ -18,7 +18,7 @@ get_events_prices(
 
 \item{cetip_code}{The CETIP code for the desired events prices data. Defaults to NULL.}
 
-\item{event}{The type of event to filter. Defaults to NULL.}
+\item{event}{The type of event to filter. Defaults to NULL. Options include: Juros, Repactuação, Atualização, Amortização, Prêmio, Resgate Total Antecipado, Participação, Opção de Venda, Prêmio de Permanência, Vencimento.}
 }
 \value{
 A data frame containing the events prices data for the specified date range and optional CETIP code.
