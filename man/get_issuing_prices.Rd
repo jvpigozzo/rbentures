@@ -15,7 +15,7 @@ get_issuing_prices(start_date = Sys.Date() - 5, end_date = Sys.Date())
 A data frame containing the issuing prices data for the specified date range.
 }
 \description{
-This function retrieves issuing prices data from the Debentures website for a specified date range.
+This function retrieves issuing prices data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve issuing prices data for the last week

@@ -11,10 +11,9 @@ get_storage_by_indexer(
 )
 }
 \arguments{
-\item{indexer}{The indexer for the desired storage data. Defaults to various financial indexers.
-Options include: Prefixado, ANBID, BTN, DI, DOLAR, FDS, IGP-DI, IGP-M, INPC, IPC,
-IPC-FIPE, IPC-M, IPC-R, IPCA, PÓS, PRÉ, SELIC, SEM ÍNDICE, TBF, TJLP, TR, TR-REAL,
-UFIR, US$ COMERCIAL.}
+\item{indexer}{The indexer for the desired storage data. Options include: ('Prefixado', 'ANBID', 'BTN', 'DI',
+'DOLAR', 'FDS', 'IGP-DI', 'IGP-M', 'INPC', 'IPC', 'IPC-FIPE', 'IPC-M', 'IPC-R', 'IPCA', 'PÓS', 'PRÉ', 'SELIC',
+'SEM ÍNDICE', 'TBF', 'TJLP', 'TR', 'TR-REAL', 'UFIR', 'US$ COMERCIAL'). Defaults to all financial indexers.}
 
 \item{start_date}{The start date for retrieving storage data. Defaults to 5 days ago from the current date.}
 
@@ -24,7 +23,7 @@ UFIR, US$ COMERCIAL.}
 A data frame containing the storage data for the specified indexer and date range.
 }
 \description{
-This function retrieves storage data from the Debentures website for a specified indexer and date range.
+This function retrieves storage data from the debentures.com.br website for a specified indexer and date range.
 }
 \examples{
 # Retrieve storage data for a specific indexer and date range

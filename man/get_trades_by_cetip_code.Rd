@@ -21,11 +21,11 @@ get_trades_by_cetip_code(
 A data frame containing the trades data for the specified CETIP code and date range.
 }
 \description{
-This function retrieves trades data from the Debentures website for a specified CETIP code and date range.
+This function retrieves trades data from the debentures.com.br website for a specified CETIP code and date range.
 }
 \examples{
 # Retrieve trades data for a specific CETIP code and date range
-trades_data <- get_trades_by_cetip_code(cetip_code = "ABC123", start_date = "2022-01-01", end_date = "2022-12-31")
+trades_data <- get_trades_by_cetip_code(cetip_code = "AALM11", start_date = "2022-01-01", end_date = "2022-12-31")
 
 }
 \keyword{CETIP}
