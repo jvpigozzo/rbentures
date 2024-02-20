@@ -568,7 +568,7 @@ get_duration <- function(start_date = Sys.Date()-21,
 #' @param payment_start_date The start date for payment dates. Defaults to NULL.
 #' @param payment_end_date The end date for payment dates. Defaults to NULL.
 #' @param cetip_code The CETIP code for the desired events data. Defaults to NULL.
-#' @param event The type of event to filter. Defaults to NULL.
+#' @param event The type of event to filter. Defaults to NULL. Options include: Juros, Repactuação, Atualização, Amortização, Prêmio, Resgate Total Antecipado, Participação, Opção de Venda, Prêmio de Permanência, Vencimento.
 #'
 #' @return A data frame containing the events data for the specified date range and optional parameters.
 #'
@@ -589,11 +589,28 @@ get_events <- function(start_date = Sys.Date(),
                        payment_end_date = NULL,
                        cetip_code = NULL,
                        event = NULL){
+  if (!is.null(event) && !event %in% c("Juros", "Repactuação", "Atualização", "Amortização", "Prêmio", "Resgate Total Antecipado",
+                                       "Participação", "Opção de Venda", "Prêmio de Permanência", "Vencimento")) {
+    stop("Invalid event selected.")
+  }
+  event_list <- list(
+    "Juros" = 1,
+    "Repactuação" = 2,
+    "Prêmio" = 3,
+    "Atualização" = 4,
+    "Resgate Total Antecipado" = 6,
+    "Amortização" = 11,
+    "Participação" = 15,
+    "Opção de Venda" = 18,
+    "Prêmio de Permanência" = 21,
+    "Vencimento" = 99
+  )
+  event_code <- as.numeric(event_list[event])
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/agenda_e.asp?emissor=&ativo=%s&evento=%s&dt_ini=%s&dt_fim=%s&dt_pgto_ini=%s&dt_pgto_fim=%s&Submit32.x=&Submit32.y="
   start_date <- ifelse(is.null(start_date),'',base::format(base::as.Date(start_date), "%d/%m/%Y"))
   end_date <- ifelse(is.null(end_date),'',base::format(base::as.Date(end_date), "%d/%m/%Y"))
   url <- sprintf(url, ifelse(is.null(cetip_code), "", cetip_code),
-                 ifelse(is.null(event), "", event),
+                 ifelse(is.null(event), "", event_code),
                  ifelse(is.null(start_date), "", start_date),
                  ifelse(is.null(end_date), "", end_date),
                  ifelse(is.null(payment_start_date), "", payment_start_date),
@@ -608,6 +625,7 @@ get_events <- function(start_date = Sys.Date(),
   names(df) <- c("event_date", "payment_date", "issuer", "ticker", "event", "type", "interest_perc", "liquidation")
   return(df)
 }
+
 
 
 #' Get Events Prices Data by Date Range
