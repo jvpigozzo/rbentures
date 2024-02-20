@@ -635,7 +635,7 @@ get_events <- function(start_date = Sys.Date(),
 #' @param start_date The start date for retrieving events prices data. Defaults to 21 days ago from the current date.
 #' @param end_date The end date for retrieving events prices data. Defaults to the current date.
 #' @param cetip_code The CETIP code for the desired events prices data. Defaults to NULL.
-#' @param event The type of event to filter. Defaults to NULL.
+#' @param event The type of event to filter. Defaults to NULL. Options include: Juros, Repactuação, Atualização, Amortização, Prêmio, Resgate Total Antecipado, Participação, Opção de Venda, Prêmio de Permanência, Vencimento.
 #'
 #' @return A data frame containing the events prices data for the specified date range and optional CETIP code.
 #'
@@ -654,17 +654,27 @@ get_events_prices <- function(start_date = Sys.Date()-21,
                               end_date = Sys.Date(),
                               cetip_code = NULL,
                               event = NULL){
-  if (!is.null(event) && !event %in% c("Juros", "Amortização", "Prêmio")) {
+  if (!is.null(event) && !event %in% c("Juros", "Repactuação", "Atualização", "Amortização", "Prêmio", "Resgate Total Antecipado",
+                                       "Participação", "Opção de Venda", "Prêmio de Permanência", "Vencimento")) {
     stop("Invalid event selected.")
   }
-  event <- list(
+  event_list <- list(
     "Juros" = 1,
+    "Repactuação" = 2,
+    "Prêmio" = 3,
+    "Atualização" = 4,
+    "Resgate Total Antecipado" = 6,
     "Amortização" = 11,
-    "Prêmio" = 3)
+    "Participação" = 15,
+    "Opção de Venda" = 18,
+    "Prêmio de Permanência" = 21,
+    "Vencimento" = 99
+  )
+  event_code <- as.numeric(event_list[event])
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/pudeeventos_e.asp?op_exc=False&emissor=&ativo=%s&dt_ini=%s&dt_fim=%s&evento=%s&Submit.x=&Submit.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
-  url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code), start_date, end_date, ifelse(is.null(event), "", event))
+  url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code), start_date, end_date, ifelse(is.null(event), "", event_code))
   res <- request_data(url=url)
   content <- get_request_content(res=res)
   txt <- base::readLines(base::textConnection(content))
