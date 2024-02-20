@@ -13,7 +13,7 @@ get_storage_by_date(date = Sys.Date() - 5)
 A data frame containing the storage data for the specified date range.
 }
 \description{
-This function retrieves storage data from the Debentures website for a specified date range.
+This function retrieves storage data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve storage data for the last week

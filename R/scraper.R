@@ -1,6 +1,6 @@
 #' Get Storage Data by Date Range
 #'
-#' This function retrieves storage data from the Debentures website for a specified date range.
+#' This function retrieves storage data from the debentures.com.br website for a specified date range.
 #'
 #' @param date Date for retrieving storage data. Defaults to 5 days ago from the current date.
 #'
@@ -36,7 +36,7 @@ get_storage_by_date <- function(date = Sys.Date() - 5){
 
 #' Get Storage Data by CETIP Code and Date Range
 #'
-#' This function retrieves storage data from the Debentures website for a specified CETIP code and date range.
+#' This function retrieves storage data from the debentures.com.br website for a specified CETIP code and date range.
 #'
 #' @param cetip_code The CETIP code for the desired storage data.
 #' @param start_date The start date for retrieving storage data. Defaults to the current date.
@@ -46,7 +46,7 @@ get_storage_by_date <- function(date = Sys.Date() - 5){
 #'
 #' @examples
 #' # Retrieve storage data for a specific CETIP code and date range
-#' storage_data <- get_storage_by_cetip_code(cetip_code = "ABC123", start_date = "2022-01-01", end_date = "2022-12-31")
+#' storage_data <- get_storage_by_cetip_code(cetip_code = "AALM11", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
 #' @importFrom utils read.table
 #'
@@ -76,12 +76,11 @@ get_storage_by_cetip_code <- function(cetip_code,
 
 #' Get Storage Data by Indexer and Date Range
 #'
-#' This function retrieves storage data from the Debentures website for a specified indexer and date range.
+#' This function retrieves storage data from the debentures.com.br website for a specified indexer and date range.
 #'
-#' @param indexer The indexer for the desired storage data. Defaults to various financial indexers.
-#'   Options include: Prefixado, ANBID, BTN, DI, DOLAR, FDS, IGP-DI, IGP-M, INPC, IPC,
-#'   IPC-FIPE, IPC-M, IPC-R, IPCA, PÓS, PRÉ, SELIC, SEM ÍNDICE, TBF, TJLP, TR, TR-REAL,
-#'   UFIR, US$ COMERCIAL.
+#' @param indexer The indexer for the desired storage data. Options include: ('Prefixado', 'ANBID', 'BTN', 'DI',
+#'   'DOLAR', 'FDS', 'IGP-DI', 'IGP-M', 'INPC', 'IPC', 'IPC-FIPE', 'IPC-M', 'IPC-R', 'IPCA', 'PÓS', 'PRÉ', 'SELIC',
+#'   'SEM ÍNDICE', 'TBF', 'TJLP', 'TR', 'TR-REAL', 'UFIR', 'US$ COMERCIAL'). Defaults to all financial indexers.
 #' @param start_date The start date for retrieving storage data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving storage data. Defaults to the current date.
 #'
@@ -161,9 +160,9 @@ get_storage_by_indexer <- function(indexer = NULL,
 
 #' Get Storage Data by Value Adjustment Type and Date Range
 #'
-#' This function retrieves storage data from the Debentures website for a specified value adjustment type and date range.
+#' This function retrieves storage data from the debentures.com.br website for a specified value adjustment type and date range.
 #'
-#' @param adjustment The adjustment type for the desired storage data. Either "inflation" or "interest".
+#' @param adjustment The adjustment type for the desired storage data. Either "inflation" or "interest". Defaults to "inflation".
 #' @param start_date The start date for retrieving storage data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving storage data. Defaults to the current date.
 #'
@@ -218,9 +217,9 @@ get_storage_by_value_adjustment <- function(adjustment = "inflation",
 
 #' Get Storage Data by Shape and Date Range
 #'
-#' This function retrieves storage data from the Debentures website for a specified shape (nominativa or escritural) and date range.
+#' This function retrieves storage data from the debentures.com.br website for a specified shape (nominativa or escritural) and date range.
 #'
-#' @param shape The shape for the desired storage data. Either "nominativa" or "escritural".
+#' @param shape The shape for the desired storage data. Either "nominativa" or "escritural". Defaults to "nominativa".
 #' @param start_date The start date for retrieving storage data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving storage data. Defaults to the current date.
 #'
@@ -275,7 +274,7 @@ get_storage_by_shape <- function(shape = "nominativa",
 
 #' Get Trades Data by Date Range
 #'
-#' This function retrieves trades data from the Debentures website for a specified date range.
+#' This function retrieves trades data from the debentures.com.br website for a specified date range.
 #'
 #' @param start_date The start date for retrieving trades data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving trades data. Defaults to the current date.
@@ -313,7 +312,7 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
 
 #' Get Trades Data by CETIP Code and Date Range
 #'
-#' This function retrieves trades data from the Debentures website for a specified CETIP code and date range.
+#' This function retrieves trades data from the debentures.com.br website for a specified CETIP code and date range.
 #'
 #' @param cetip_code The CETIP code for the desired trades data.
 #' @param start_date The start date for retrieving trades data. Defaults to 1 day ago from the current date.
@@ -323,7 +322,7 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
 #'
 #' @examples
 #' # Retrieve trades data for a specific CETIP code and date range
-#' trades_data <- get_trades_by_cetip_code(cetip_code = "ABC123", start_date = "2022-01-01", end_date = "2022-12-31")
+#' trades_data <- get_trades_by_cetip_code(cetip_code = "AALM11", start_date = "2022-01-01", end_date = "2022-12-31")
 #'
 #' @importFrom utils read.table
 #'
@@ -350,7 +349,7 @@ get_trades_by_cetip_code <- function(cetip_code,
 
 #' Get Registered Coordinators
 #'
-#' This function retrieves data about registered coordinators from the Debentures website.
+#' This function retrieves data about registered coordinators from the debentures.com.br website.
 #'
 #' @return A data frame containing information about registered coordinators.
 #'
@@ -391,19 +390,19 @@ get_registered_coordinators <- function(){
 
 
 
-#' Get Registered Banks (Bakers)
+#' Get Registered Banks (Bankers)
 #'
-#' This function retrieves data about registered banks (bakers) from the Debentures website.
+#' This function retrieves data about registered banks (bankers) from the debentures.com.br website.
 #'
-#' @return A data frame containing information about registered banks (bakers).
+#' @return A data frame containing information about registered banks (bankers).
 #'
 #' @examples
-#' # Retrieve information about registered banks (bakers)
-#' banks_data <- get_registered_bakers()
+#' # Retrieve information about registered banks (bankers)
+#' banks_data <- get_registered_bankers()
 #'
-#' @keywords debentures finance banks bakers data
+#' @keywords debentures finance banks bankers data
 #' @export
-get_registered_bakers <- function(){
+get_registered_bankers <- function(){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/participantes/bancosmandatarios_e.asp?op_exc=False&mandatario="
   res <- request_data(url=url)
   content <- get_request_content(res=res)
@@ -435,7 +434,7 @@ get_registered_bakers <- function(){
 
 #' Get Registered Trustees
 #'
-#' This function retrieves data about registered trustees from the Debentures website.
+#' This function retrieves data about registered trustees from the debentures.com.br website.
 #'
 #' @return A data frame containing information about registered trustees.
 #'
@@ -477,7 +476,7 @@ get_registered_trustees <- function(){
 
 #' Get Issuing Prices Data by Date Range
 #'
-#' This function retrieves issuing prices data from the Debentures website for a specified date range.
+#' This function retrieves issuing prices data from the debentures.com.br website for a specified date range.
 #'
 #' @param start_date The start date for retrieving issuing prices data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving issuing prices data. Defaults to the current date.
@@ -518,7 +517,7 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
 
 #' Get Duration Data by Date Range
 #'
-#' This function retrieves duration data from the Debentures website for a specified date range.
+#' This function retrieves duration data from the debentures.com.br website for a specified date range.
 #'
 #' @param start_date The start date for retrieving duration data. Defaults to 21 days ago from the current date.
 #' @param end_date The end date for retrieving duration data. Defaults to the current date.
@@ -532,7 +531,7 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
 #' duration_data <- get_duration()
 #'
 #' # Retrieve duration data for a specific date range and CETIP code
-#' duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123")
+#' duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11")
 #'
 #' @importFrom utils read.table
 #'
@@ -561,14 +560,16 @@ get_duration <- function(start_date = Sys.Date()-21,
 
 #' Get Events Data by Date Range and Payment Dates
 #'
-#' This function retrieves events data from the Debentures website for a specified date range and payment dates.
+#' This function retrieves events data from the debentures.com.br website for a specified date range and payment dates.
 #'
 #' @param start_date The start date for retrieving events data. Defaults to the current date.
 #' @param end_date The end date for retrieving events data. Defaults to 5 days after the current date.
 #' @param payment_start_date The start date for payment dates. Defaults to NULL.
 #' @param payment_end_date The end date for payment dates. Defaults to NULL.
 #' @param cetip_code The CETIP code for the desired events data. Defaults to NULL.
-#' @param event The type of event to filter. Defaults to NULL. Options include: Juros, Repactuação, Atualização, Amortização, Prêmio, Resgate Total Antecipado, Participação, Opção de Venda, Prêmio de Permanência, Vencimento.
+#' @param event The type of event to filter. Options include: ('Juros', 'Repactuação', 'Atualização',
+#'   'Amortização', 'Prêmio', 'Resgate Total Antecipado', 'Participação', 'Opção de Venda',
+#'   'Prêmio de Permanência', 'Vencimento'). Defaults to all events.
 #'
 #' @return A data frame containing the events data for the specified date range and optional parameters.
 #'
@@ -577,7 +578,7 @@ get_duration <- function(start_date = Sys.Date()-21,
 #' events_data <- get_events()
 #'
 #' # Retrieve events data for a specific date range, payment dates, and CETIP code
-#' events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "ABC123", event = "Juros")
+#' events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "AALM11", event = "Juros")
 #'
 #' @importFrom utils read.table
 #'
@@ -630,12 +631,14 @@ get_events <- function(start_date = Sys.Date(),
 
 #' Get Events Prices Data by Date Range
 #'
-#' This function retrieves events prices data from the Debentures website for a specified date range.
+#' This function retrieves events prices data from the debentures.com.br website for a specified date range.
 #'
 #' @param start_date The start date for retrieving events prices data. Defaults to 21 days ago from the current date.
 #' @param end_date The end date for retrieving events prices data. Defaults to the current date.
 #' @param cetip_code The CETIP code for the desired events prices data. Defaults to NULL.
-#' @param event The type of event to filter. Defaults to NULL. Options include: Juros, Repactuação, Atualização, Amortização, Prêmio, Resgate Total Antecipado, Participação, Opção de Venda, Prêmio de Permanência, Vencimento.
+#' @param event The type of event to filter. Options include: ('Juros', 'Repactuação', 'Atualização',
+#'   'Amortização', 'Prêmio', 'Resgate Total Antecipado', 'Participação', 'Opção de Venda',
+#'   'Prêmio de Permanência', 'Vencimento'). Defaults to all events.
 #'
 #' @return A data frame containing the events prices data for the specified date range and optional CETIP code.
 #'
@@ -644,7 +647,7 @@ get_events <- function(start_date = Sys.Date(),
 #' events_prices_data <- get_events_prices()
 #'
 #' # Retrieve events prices data for a specific date range and CETIP code
-#' events_prices_data <- get_events_prices(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123", event = "Juros")
+#' events_prices_data <- get_events_prices(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11", event = "Juros")
 #'
 #' @importFrom utils read.table
 #'
@@ -691,13 +694,12 @@ get_events_prices <- function(start_date = Sys.Date()-21,
 
 #' Get Issuing Volume Data by Date Range
 #'
-#' This function retrieves issuing volume data from the Debentures website for a specified date range.
+#' This function retrieves issuing volume data from the debentures.com.br website for a specified date range.
 #'
 #' @param start_date The start date for retrieving issuing volume data. Defaults to 21 days ago from the current date.
 #' @param end_date The end date for retrieving issuing volume data. Defaults to 1 day ago from the current date.
 #' @param date_type A character vector specifying the date type ('issuing', 'registering'). Defaults to 'issuing'.
 #' @param cvm_instruction A numeric vector specifying the CVM instructions (400, 476). Defaults to c(400, 476).
-#' @param as A character vector specifying the desired output format ('tibble', 'xts', 'ts', 'data.frame', 'text'). Defaults to 'data.frame'.
 #'
 #' @return A data frame containing issuing volume data for the specified date range, date type, and CVM instructions.
 #'

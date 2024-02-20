@@ -5,7 +5,7 @@
 \title{Get Storage Data by Value Adjustment Type and Date Range}
 \usage{
 get_storage_by_value_adjustment(
-  adjustment = c("inflation", "interest"),
+  adjustment = "inflation",
   start_date = Sys.Date() - 5,
   end_date = Sys.Date()
 )
@@ -21,7 +21,7 @@ get_storage_by_value_adjustment(
 A data frame containing the storage data for the specified adjustment type and date range.
 }
 \description{
-This function retrieves storage data from the Debentures website for a specified value adjustment type and date range.
+This function retrieves storage data from the debentures.com.br website for a specified value adjustment type and date range.
 }
 \examples{
 # Retrieve storage data for a specific adjustment type and date range

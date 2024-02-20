@@ -10,7 +10,7 @@ get_registered_coordinators()
 A data frame containing information about registered coordinators.
 }
 \description{
-This function retrieves data about registered coordinators from the Debentures website.
+This function retrieves data about registered coordinators from the debentures.com.br website.
 }
 \examples{
 # Retrieve information about registered coordinators
