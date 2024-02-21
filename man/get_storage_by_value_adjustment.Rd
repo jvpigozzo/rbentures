@@ -11,7 +11,7 @@ get_storage_by_value_adjustment(
 )
 }
 \arguments{
-\item{adjustment}{The adjustment type for the desired storage data. Either "inflation" or "interest".}
+\item{adjustment}{The adjustment type for the desired storage data. Either "inflation" or "interest". Defaults to "inflation".}
 
 \item{start_date}{The start date for retrieving storage data. Defaults to 5 days ago from the current date.}
 
