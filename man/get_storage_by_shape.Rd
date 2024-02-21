@@ -11,7 +11,7 @@ get_storage_by_shape(
 )
 }
 \arguments{
-\item{shape}{The shape for the desired storage data. Either "nominativa" or "escritural".}
+\item{shape}{The shape for the desired storage data. Either "nominativa" or "escritural". Defaults to "nominativa".}
 
 \item{start_date}{The start date for retrieving storage data. Defaults to 5 days ago from the current date.}
 
