@@ -5,7 +5,7 @@
 \title{Get Storage Data by Shape and Date Range}
 \usage{
 get_storage_by_shape(
-  shape = c("nominativa", "escritural"),
+  shape = "nominativa",
   start_date = Sys.Date() - 5,
   end_date = Sys.Date()
 )
@@ -21,7 +21,7 @@ get_storage_by_shape(
 A data frame containing the storage data for the specified shape and date range.
 }
 \description{
-This function retrieves storage data from the Debentures website for a specified shape (nominativa or escritural) and date range.
+This function retrieves storage data from the debentures.com.br website for a specified shape (nominativa or escritural) and date range.
 }
 \examples{
 # Retrieve storage data for a specific shape and date range

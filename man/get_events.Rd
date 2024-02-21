@@ -24,20 +24,22 @@ get_events(
 
 \item{cetip_code}{The CETIP code for the desired events data. Defaults to NULL.}
 
-\item{event}{The type of event to filter. Defaults to NULL.}
+\item{event}{The type of event to filter. Options include: ('Juros', 'Repactuação', 'Atualização',
+'Amortização', 'Prêmio', 'Resgate Total Antecipado', 'Participação', 'Opção de Venda',
+'Prêmio de Permanência', 'Vencimento'). Defaults to all events.}
 }
 \value{
 A data frame containing the events data for the specified date range and optional parameters.
 }
 \description{
-This function retrieves events data from the Debentures website for a specified date range and payment dates.
+This function retrieves events data from the debentures.com.br website for a specified date range and payment dates.
 }
 \examples{
 # Retrieve events data for the next 5 days
 events_data <- get_events()
 
 # Retrieve events data for a specific date range, payment dates, and CETIP code
-events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "ABC123", event = "Juros")
+events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "AALM11", event = "Juros")
 
 }
 \keyword{data}

@@ -20,14 +20,12 @@ get_issuing_volume_by_date(
 \item{date_type}{A character vector specifying the date type ('issuing', 'registering'). Defaults to 'issuing'.}
 
 \item{cvm_instruction}{A numeric vector specifying the CVM instructions (400, 476). Defaults to c(400, 476).}
-
-\item{as}{A character vector specifying the desired output format ('tibble', 'xts', 'ts', 'data.frame', 'text'). Defaults to 'data.frame'.}
 }
 \value{
 A data frame containing issuing volume data for the specified date range, date type, and CVM instructions.
 }
 \description{
-This function retrieves issuing volume data from the Debentures website for a specified date range.
+This function retrieves issuing volume data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve issuing volume data for the last 21 days

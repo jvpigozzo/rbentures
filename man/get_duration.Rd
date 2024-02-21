@@ -24,14 +24,14 @@ get_duration(
 A data frame containing the duration data for the specified date range and optional CETIP code.
 }
 \description{
-This function retrieves duration data from the Debentures website for a specified date range.
+This function retrieves duration data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve duration data for the last 21 days
 duration_data <- get_duration()
 
 # Retrieve duration data for a specific date range and CETIP code
-duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123")
+duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11")
 
 }
 \keyword{data}

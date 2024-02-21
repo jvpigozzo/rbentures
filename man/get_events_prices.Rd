@@ -18,20 +18,22 @@ get_events_prices(
 
 \item{cetip_code}{The CETIP code for the desired events prices data. Defaults to NULL.}
 
-\item{event}{The type of event to filter. Defaults to NULL.}
+\item{event}{The type of event to filter. Options include: ('Juros', 'Repactuação', 'Atualização',
+'Amortização', 'Prêmio', 'Resgate Total Antecipado', 'Participação', 'Opção de Venda',
+'Prêmio de Permanência', 'Vencimento'). Defaults to all events.}
 }
 \value{
 A data frame containing the events prices data for the specified date range and optional CETIP code.
 }
 \description{
-This function retrieves events prices data from the Debentures website for a specified date range.
+This function retrieves events prices data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve events prices data for the last 21 days
 events_prices_data <- get_events_prices()
 
 # Retrieve events prices data for a specific date range and CETIP code
-events_prices_data <- get_events_prices(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "ABC123", event = "Juros")
+events_prices_data <- get_events_prices(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11", event = "Juros")
 
 }
 \keyword{data}

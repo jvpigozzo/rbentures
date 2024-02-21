@@ -15,7 +15,7 @@ get_trades_by_date(start_date = Sys.Date() - 5, end_date = Sys.Date())
 A data frame containing the trades data for the specified date range.
 }
 \description{
-This function retrieves trades data from the Debentures website for a specified date range.
+This function retrieves trades data from the debentures.com.br website for a specified date range.
 }
 \examples{
 # Retrieve trades data for the last week
