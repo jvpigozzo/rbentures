@@ -8,8 +8,7 @@ get_issuing_volume_by_date(
   start_date = Sys.Date() - 21,
   end_date = Sys.Date() - 1,
   date_type = "issuing",
-  cvm_instruction = c(400, 476),
-  as = c("tibble", "xts", "ts", "data.frame", "text")
+  cvm_instruction = c(400, 476)
 )
 }
 \arguments{
