@@ -215,13 +215,13 @@ get_storage_by_value_adjustment <- function(adjustment = "inflation",
         values <- base::strsplit(txt[i+1], "\t")[[1]]
         row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
                           adjustment = adjustment,
-                          value_mrkt = values[2],
-                          value_treasury = values[3],
-                          value = values[4])
+                          vol_mrkt = values[2],
+                          vol_treasury = values[3],
+                          vol = values[4])
         df <- rbind(df, row)
       }
     }
-    num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+    num_cols <- c("vol_mrkt", "vol_treasury", "vol")
     df <- get_numeric_cols(df, num_cols)
     return(df)
   }, error = function(e) {
