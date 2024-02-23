@@ -39,7 +39,7 @@ This function retrieves events data from the debentures.com.br website for a spe
 events_data <- get_events()
 
 # Retrieve events data for a specific date range, payment dates, and CETIP code
-events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "AALM11", event = "Juros")
+events_data <- get_events(start_date = Sys.Date(), end_date = Sys.Date() + 365, payment_start_date = Sys.Date(), payment_end_date = Sys.Date() + 365, cetip_code = "AALM11", event = "Juros")
 
 }
 \keyword{data}
