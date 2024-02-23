@@ -11,7 +11,7 @@
 #' storage_data <- get_storage_by_date()
 #'
 #' # Retrieve storage data for a specific date
-#' storage_data <- get_storage_by_date(date = "2022-01-01")
+#' storage_data <- get_storage_by_date(date = "2022-01-03")
 #'
 #' @importFrom utils read.table
 #'
@@ -96,7 +96,7 @@ get_storage_by_cetip_code <- function(cetip_code,
 #'
 #' @examples
 #' # Retrieve storage data for a specific indexer and date range
-#' storage_data <- get_storage_by_indexer(indexer = "IPCA", start_date = "2022-01-01", end_date = "2022-12-31")
+#' storage_data <- get_storage_by_indexer(indexer = "IPCA", start_date = "2022-01-01", end_date = "2022-01-03")
 #'
 #' @importFrom utils read.table
 #'
@@ -575,7 +575,7 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
 #' duration_data <- get_duration()
 #'
 #' # Retrieve duration data for a specific date range and CETIP code
-#' duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11")
+#' duration_data <- get_duration(start_date = "2021-01-01", end_date = "2021-12-31", cetip_code = "AALM11")
 #'
 #' @importFrom utils read.table
 #'

@@ -20,7 +20,7 @@ This function retrieves storage data from the debentures.com.br website for a sp
 storage_data <- get_storage_by_date()
 
 # Retrieve storage data for a specific date
-storage_data <- get_storage_by_date(date = "2022-01-01")
+storage_data <- get_storage_by_date(date = "2022-01-03")
 
 }
 \keyword{data}
