@@ -27,7 +27,7 @@ This function retrieves storage data from the debentures.com.br website for a sp
 }
 \examples{
 # Retrieve storage data for a specific indexer and date range
-storage_data <- get_storage_by_indexer(indexer = "IPCA", start_date = "2022-01-01", end_date = "2022-12-31")
+storage_data <- get_storage_by_indexer(indexer = "IPCA", start_date = "2022-01-01", end_date = "2022-01-03")
 
 }
 \keyword{data}

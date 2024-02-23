@@ -31,7 +31,7 @@ This function retrieves duration data from the debentures.com.br website for a s
 duration_data <- get_duration()
 
 # Retrieve duration data for a specific date range and CETIP code
-duration_data <- get_duration(start_date = "2022-01-01", end_date = "2022-12-31", cetip_code = "AALM11")
+duration_data <- get_duration(start_date = "2021-01-01", end_date = "2021-12-31", cetip_code = "AALM11")
 
 }
 \keyword{data}
