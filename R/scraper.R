@@ -627,7 +627,7 @@ get_duration <- function(start_date = Sys.Date()-21,
 #' events_data <- get_events()
 #'
 #' # Retrieve events data for a specific date range, payment dates, and CETIP code
-#' events_data <- get_events(start_date = "2022-01-01", end_date = "2022-12-31", payment_start_date = "2022-02-01", payment_end_date = "2022-02-28", cetip_code = "AALM11", event = "Juros")
+#' events_data <- get_events(start_date = Sys.Date(), end_date = Sys.Date() + 365, payment_start_date = Sys.Date(), payment_end_date = Sys.Date() + 365, cetip_code = "AALM11", event = "Juros")
 #'
 #' @importFrom utils read.table
 #'
@@ -659,6 +659,8 @@ get_events <- function(start_date = Sys.Date(),
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/eventosfinanceiros/agenda_e.asp?emissor=&ativo=%s&evento=%s&dt_ini=%s&dt_fim=%s&dt_pgto_ini=%s&dt_pgto_fim=%s&Submit32.x=&Submit32.y="
   start_date <- ifelse(is.null(start_date),'',base::format(base::as.Date(start_date), "%d/%m/%Y"))
   end_date <- ifelse(is.null(end_date),'',base::format(base::as.Date(end_date), "%d/%m/%Y"))
+  payment_start_date <- ifelse(is.null(payment_start_date), '', base::format(base::as.Date(payment_start_date), "%d/%m/%Y"))
+  payment_end_date <- ifelse(is.null(payment_end_date), '', base::format(base::as.Date(payment_end_date), "%d/%m/%Y"))
   url <- sprintf(url, ifelse(is.null(cetip_code), "", cetip_code),
                  ifelse(is.null(event), "", event_code),
                  ifelse(is.null(start_date), "", start_date),
