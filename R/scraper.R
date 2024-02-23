@@ -21,15 +21,19 @@ get_storage_by_date <- function(date = Sys.Date() - 5){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/estoque/estoqueporativo_e1.asp?dt_ini=%s&dt_fim=%s&ativo=&moeda=1&Op_exc=Nada&cab=s"
   date <- base::format(base::as.Date(date), "%d/%m/%Y")
   url <- base::sprintf(url, date, date)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  txt <- txt[1:(length(txt) - 2)]
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
-  num_cols <- c("V3", "V4", "V5", "V6", "V7", "V8")
-  df <- get_numeric_cols(df, num_cols)
-  names(df) <- c("issuer", "ticker", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol", "situation")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    txt <- txt[1:(length(txt) - 2)]
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
+    num_cols <- c("V3", "V4", "V5", "V6", "V7", "V8")
+    df <- get_numeric_cols(df, num_cols)
+    names(df) <- c("issuer", "ticker", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol", "situation")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -59,17 +63,21 @@ get_storage_by_cetip_code <- function(cetip_code,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date, cetip_code)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
-  df <- df[c("V1", "V2", "V3", "V4", "V5", "V6", "V7")]
-  num_cols <- c("V2", "V3", "V4", "V5", "V6", "V7")
-  date_cols <- c("V1")
-  df <- get_numeric_cols(df, num_cols)
-  df <- get_date_cols(df, date_cols)
-  names(df) <- c("date", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 6)
+    df <- df[c("V1", "V2", "V3", "V4", "V5", "V6", "V7")]
+    num_cols <- c("V2", "V3", "V4", "V5", "V6", "V7")
+    date_cols <- c("V1")
+    df <- get_numeric_cols(df, num_cols)
+    df <- get_date_cols(df, date_cols)
+    names(df) <- c("date", "qty_mrkt", "vol_mrkt", "qty_treasury", "vol_treasury", "qty", "vol")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -132,28 +140,32 @@ get_storage_by_indexer <- function(indexer = NULL,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date, indexer_code)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  txt <- txt[-1][grep("[^\\s]", txt[-1])]
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (base::grepl("Data do Estoque", txt[i])) {
-      date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    txt <- txt[-1][grep("[^\\s]", txt[-1])]
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (base::grepl("Data do Estoque", txt[i])) {
+        date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+      }
+      if (base::grepl("Indexadores", txt[i])) {
+        values <- base::strsplit(txt[i+1], "\t")[[1]]
+        row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
+                          indexer = indexer,
+                          vol_mrkt = values[2],
+                          vol_treasury = values[3],
+                          vol = values[4])
+        df <- rbind(df, row)
+      }
     }
-    if (base::grepl("Indexadores", txt[i])) {
-      values <- base::strsplit(txt[i+1], "\t")[[1]]
-      row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
-                        indexer = indexer,
-                        vol_mrkt = values[2],
-                        vol_treasury = values[3],
-                        vol = values[4])
-      df <- rbind(df, row)
-    }
-  }
-  num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
-  df <- get_numeric_cols(df, num_cols)
-  return(df)
+    num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+    df <- get_numeric_cols(df, num_cols)
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -189,28 +201,32 @@ get_storage_by_value_adjustment <- function(adjustment = "inflation",
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date, adj)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  txt <- txt[-1][grep("[^\\s]", txt[-1])]
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (base::grepl("Data do Estoque", txt[i])) {
-      date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    txt <- txt[-1][grep("[^\\s]", txt[-1])]
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (base::grepl("Data do Estoque", txt[i])) {
+        date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+      }
+      if (base::grepl("Tipo", txt[i])) {
+        values <- base::strsplit(txt[i+1], "\t")[[1]]
+        row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
+                          adjustment = adjustment,
+                          value_mrkt = values[2],
+                          value_treasury = values[3],
+                          value = values[4])
+        df <- rbind(df, row)
+      }
     }
-    if (base::grepl("Tipo", txt[i])) {
-      values <- base::strsplit(txt[i+1], "\t")[[1]]
-      row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
-                        adjustment = adjustment,
-                        value_mrkt = values[2],
-                        value_treasury = values[3],
-                        value = values[4])
-      df <- rbind(df, row)
-    }
-  }
-  num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
-  df <- get_numeric_cols(df, num_cols)
-  return(df)
+    num_cols <- c("value_mrkt", "vol_mrkt", "vol_treasury", "vol")
+    df <- get_numeric_cols(df, num_cols)
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -246,28 +262,32 @@ get_storage_by_shape <- function(shape = "nominativa",
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date, s)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  txt <- txt[-1][grep("[^\\s]", txt[-1])]
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (base::grepl("Data do Estoque", txt[i])) {
-      date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    txt <- txt[-1][grep("[^\\s]", txt[-1])]
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (base::grepl("Data do Estoque", txt[i])) {
+        date_str <- base::gsub(".*Data do Estoque (\\d{2}/\\d{2}/\\d{4}) -.*", "\\1", txt[i])
+      }
+      if (base::grepl("Forma", txt[i])) {
+        values <- base::strsplit(txt[i+1], "\t")[[1]]
+        row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
+                          shape = shape,
+                          value_mrkt = values[2],
+                          value_treasury = values[3],
+                          value = values[4])
+        df <- rbind(df, row)
+      }
     }
-    if (base::grepl("Forma", txt[i])) {
-      values <- base::strsplit(txt[i+1], "\t")[[1]]
-      row <- data.frame(date = as.Date(date_str, format = "%d/%m/%Y"),
-                        shape = shape,
-                        value_mrkt = values[2],
-                        value_treasury = values[3],
-                        value = values[4])
-      df <- rbind(df, row)
-    }
-  }
-  num_cols <- c("value_mrkt", "value_treasury", "value")
-  df <- get_numeric_cols(df, num_cols)
-  return(df)
+    num_cols <- c("value_mrkt", "value_treasury", "value")
+    df <- get_numeric_cols(df, num_cols)
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -298,14 +318,18 @@ get_trades_by_date <- function(start_date = Sys.Date()-5,
   start_date <- base::format(base::as.Date(start_date), "%Y%m%d")
   end_date <- base::format(base::as.Date(end_date), "%Y%m%d")
   url <- base::sprintf(url, start_date, end_date)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- get_date_cols(df, date_cols=c("V1"))
-  df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
-  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- get_date_cols(df, date_cols=c("V1"))
+    df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
+    names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -335,14 +359,18 @@ get_trades_by_cetip_code <- function(cetip_code,
   start_date <- base::format(base::as.Date(start_date), "%Y%m%d")
   end_date <- base::format(base::as.Date(end_date), "%Y%m%d")
   url <- base::sprintf(url, cetip_code, start_date, end_date)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- get_date_cols(df, date_cols=c("V1"))
-  df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
-  names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- get_date_cols(df, date_cols=c("V1"))
+    df <- get_numeric_cols(df, num_cols=c("V5","V6","V7","V8","V9","V10"))
+    names(df) <- c("date", "issuer", "ticker", "isin", "qty", "trades", "min", "avg", "max", "price_curve_perc")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -361,31 +389,35 @@ get_trades_by_cetip_code <- function(cetip_code,
 #' @export
 get_registered_coordinators <- function(){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/participantes/coordenadores_e.asp?op_exc=False&coordenador="
+  tryCatch({
   res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (!startsWith(txt[i], ";")) {
-      coordinator <- txt[i]
-      i <- i + 3
-      if (txt[i] == ";EMISSORES\t;ATIVOS\t;SITUAÇÃO") {
-        i <- i + 1
-        while(i+1 <= length(txt) && txt[i]!='; '){
-          temp <- data.frame()
-          values <- strsplit(txt[i], "\t")[[1]]
-          temp[1,"coordinator"] <- coordinator
-          temp[1,"issuer"] <- values[1]
-          temp[1,"codigo_cetip"] <- values[2]
-          temp[1,"status"] <- values[3]
-          df <- rbind(temp, df)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (!startsWith(txt[i], ";")) {
+        coordinator <- txt[i]
+        i <- i + 3
+        if (txt[i] == ";EMISSORES\t;ATIVOS\t;SITUAÇÃO") {
           i <- i + 1
+          while(i+1 <= length(txt) && txt[i]!='; '){
+            temp <- data.frame()
+            values <- strsplit(txt[i], "\t")[[1]]
+            temp[1,"coordinator"] <- coordinator
+            temp[1,"issuer"] <- values[1]
+            temp[1,"codigo_cetip"] <- values[2]
+            temp[1,"status"] <- values[3]
+            df <- rbind(temp, df)
+            i <- i + 1
+          }
         }
       }
     }
-  }
-  df <- data.frame(lapply(df, function(x) gsub(";", "", x)))
-  return(df)
+    df <- data.frame(lapply(df, function(x) gsub(";", "", x)))
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -404,30 +436,34 @@ get_registered_coordinators <- function(){
 #' @export
 get_registered_bankers <- function(){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/participantes/bancosmandatarios_e.asp?op_exc=False&mandatario="
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (i+1 <= length(txt) && startsWith(txt[i+1], "Contato:")) {
-      banker <- txt[i]
-      i <- i + 3
-      if (txt[i] == "Emissores\tAtivos\tSituação") {
-        i <- i + 1
-        while(i+1 <= length(txt) && txt[i]!=""){
-          temp <- data.frame()
-          values <- strsplit(txt[i], "\t")[[1]]
-          temp[1,"banker"] <- banker
-          temp[1,"issuer"] <- values[1]
-          temp[1,"codigo_cetip"] <- values[2]
-          temp[1,"status"] <- values[3]
-          df <- rbind(temp, df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (i+1 <= length(txt) && startsWith(txt[i+1], "Contato:")) {
+        banker <- txt[i]
+        i <- i + 3
+        if (txt[i] == "Emissores\tAtivos\tSituação") {
           i <- i + 1
+          while(i+1 <= length(txt) && txt[i]!=""){
+            temp <- data.frame()
+            values <- strsplit(txt[i], "\t")[[1]]
+            temp[1,"banker"] <- banker
+            temp[1,"issuer"] <- values[1]
+            temp[1,"codigo_cetip"] <- values[2]
+            temp[1,"status"] <- values[3]
+            df <- rbind(temp, df)
+            i <- i + 1
+          }
         }
       }
     }
-  }
-  return(df)
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -446,30 +482,34 @@ get_registered_bankers <- function(){
 #' @export
 get_registered_trustees <- function(){
   url <-"http://www.debentures.com.br/exploreosnd/consultaadados/participantes/agentesfiduciarios_e.asp?op_exc=False&fiduciario="
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- data.frame()
-  for (i in 1:length(txt)) {
-    if (i+1 <= length(txt) && startsWith(txt[i+1], "Contato:")) {
-      banker <- txt[i]
-      i <- i + 3
-      if (txt[i] == "Emissores\tAtivos\tSituação") {
-        i <- i + 1
-        while(i+1 <= length(txt) && txt[i]!=" "){
-          temp <- data.frame()
-          values <- strsplit(txt[i], "\t")[[1]]
-          temp[1,"banker"] <- banker
-          temp[1,"issuer"] <- values[1]
-          temp[1,"codigo_cetip"] <- values[2]
-          temp[1,"status"] <- values[3]
-          df <- rbind(temp, df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- data.frame()
+    for (i in 1:length(txt)) {
+      if (i+1 <= length(txt) && startsWith(txt[i+1], "Contato:")) {
+        banker <- txt[i]
+        i <- i + 3
+        if (txt[i] == "Emissores\tAtivos\tSituação") {
           i <- i + 1
+          while(i+1 <= length(txt) && txt[i]!=" "){
+            temp <- data.frame()
+            values <- strsplit(txt[i], "\t")[[1]]
+            temp[1,"banker"] <- banker
+            temp[1,"issuer"] <- values[1]
+            temp[1,"codigo_cetip"] <- values[2]
+            temp[1,"status"] <- values[3]
+            df <- rbind(temp, df)
+            i <- i + 1
+          }
         }
       }
     }
-  }
-  return(df)
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -500,17 +540,21 @@ get_issuing_prices <- function(start_date = Sys.Date()-5,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, start_date, end_date)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  rows_to_skip <- 3
-  rows_to_keep <- length(txt) - (rows_to_skip + 4)
-  df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- df[, 1:6]
-  df <- get_numeric_cols(df, num_cols=c("V3", "V4", "V5", "V6"))
-  df <- get_date_cols(df, date_cols=c("V1"))
-  names(df) <- c("issuing_date", "ticker", "par_value", "interest", "premium", "price")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    rows_to_skip <- 3
+    rows_to_keep <- length(txt) - (rows_to_skip + 4)
+    df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- df[, 1:6]
+    df <- get_numeric_cols(df, num_cols=c("V3", "V4", "V5", "V6"))
+    df <- get_date_cols(df, date_cols=c("V1"))
+    names(df) <- c("issuing_date", "ticker", "par_value", "interest", "premium", "price")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -546,15 +590,20 @@ get_duration <- function(start_date = Sys.Date()-21,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code), cvm_date, start_date, end_date)
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 7)
-  df <- df[c("V1","V2","V4","V6","V7")]
-  df <- get_numeric_cols(df, num_cols=c("V7"))
-  df <- get_date_cols(df, date_cols=c("V4","V6"))
-  names(df) <- c("issuer", "ticker", "issuing_date", "maturity_date", "duration_years")
-  return(df)
+
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 7)
+    df <- df[c("V1","V2","V4","V6","V7")]
+    df <- get_numeric_cols(df, num_cols=c("V7"))
+    df <- get_date_cols(df, date_cols=c("V4","V6"))
+    names(df) <- c("issuer", "ticker", "issuing_date", "maturity_date", "duration_years")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -616,15 +665,19 @@ get_events <- function(start_date = Sys.Date(),
                  ifelse(is.null(end_date), "", end_date),
                  ifelse(is.null(payment_start_date), "", payment_start_date),
                  ifelse(is.null(payment_end_date), "", payment_end_date))
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- df[c("V1","V2","V3","V4","V5","V6","V7","V8")]
-  df <- get_numeric_cols(df, num_cols=c("V7"))
-  df <- get_date_cols(df, date_cols=c("V1","V2"))
-  names(df) <- c("event_date", "payment_date", "issuer", "ticker", "event", "type", "interest_perc", "liquidation")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- df[c("V1","V2","V3","V4","V5","V6","V7","V8")]
+    df <- get_numeric_cols(df, num_cols=c("V7"))
+    df <- get_date_cols(df, date_cols=c("V1","V2"))
+    names(df) <- c("event_date", "payment_date", "issuer", "ticker", "event", "type", "interest_perc", "liquidation")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -678,16 +731,19 @@ get_events_prices <- function(start_date = Sys.Date()-21,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code), start_date, end_date, ifelse(is.null(event), "", event_code))
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- df[c("V1","V2","V3","V4","V5","V6")]
-  df <- get_numeric_cols(df, num_cols=c("V4"))
-  df <- get_date_cols(df, date_cols=c("V1"))
-  names(df) <- c("event_date", "ticker", "event", "price", "situation", "liquidation")
-  return(df)
-
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    df <- utils::read.table(base::textConnection(txt, "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- df[c("V1","V2","V3","V4","V5","V6")]
+    df <- get_numeric_cols(df, num_cols=c("V4"))
+    df <- get_date_cols(df, date_cols=c("V1"))
+    names(df) <- c("event_date", "ticker", "event", "price", "situation", "liquidation")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
 
 
@@ -725,14 +781,18 @@ get_issuing_volume_by_date <- function(start_date = Sys.Date()-21,
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
   url <- base::sprintf(url, ifelse(is.null(date_type), "0", ifelse(date_type=='registering', "2", "0")), start_date, end_date, ifelse(is.null(cvm_instruction), "", ifelse(cvm_instruction==400, "1", "2")))
-  res <- request_data(url=url)
-  content <- get_request_content(res=res)
-  txt <- base::readLines(base::textConnection(content))
-  rows_to_skip <- 2
-  rows_to_keep <- length(txt) - (rows_to_skip)
-  df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
-  df <- get_numeric_cols(df=df, num_cols = c("V7"))
-  df <- get_date_cols(df=df, date_cols = c("V4","V5","V6"))
-  names(df) <- c("ticker", "issuer", "situation", "issuing_date", "registering_date_snd", "registering_date_cvm", "vol")
-  return(df)
+  tryCatch({
+    res <- request_data(url=url)
+    content <- get_request_content(res=res)
+    txt <- base::readLines(base::textConnection(content))
+    rows_to_skip <- 2
+    rows_to_keep <- length(txt) - (rows_to_skip)
+    df <- utils::read.table(base::textConnection(txt[1:rows_to_keep], "r"), sep = "\t", header = FALSE, skip = 3)
+    df <- get_numeric_cols(df=df, num_cols = c("V7"))
+    df <- get_date_cols(df=df, date_cols = c("V4","V5","V6"))
+    names(df) <- c("ticker", "issuer", "situation", "issuing_date", "registering_date_snd", "registering_date_cvm", "vol")
+    return(df)
+  }, error = function(e) {
+    cat("An error occurred while processing the request:", e$message, "\n")
+  })
 }
