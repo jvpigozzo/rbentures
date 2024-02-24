@@ -4,9 +4,15 @@
 \alias{get_issuing_prices}
 \title{Get Issuing Prices Data by Date Range}
 \usage{
-get_issuing_prices(start_date = Sys.Date() - 5, end_date = Sys.Date())
+get_issuing_prices(
+  cetip_code,
+  start_date = Sys.Date() - 5,
+  end_date = Sys.Date()
+)
 }
 \arguments{
+\item{cetip_code}{The CETIP code for the desired storage data.}
+
 \item{start_date}{The start date for retrieving issuing prices data. Defaults to 5 days ago from the current date.}
 
 \item{end_date}{The end date for retrieving issuing prices data. Defaults to the current date.}
@@ -22,7 +28,7 @@ This function retrieves issuing prices data from the debentures.com.br website f
 issuing_prices_data <- get_issuing_prices()
 
 # Retrieve issuing prices data for a specific date range
-issuing_prices_data <- get_issuing_prices(start_date = "2022-01-01", end_date = "2022-12-31")
+issuing_prices_data <- get_issuing_prices(cetip_code = 'AALM11', start_date = "2022-01-01", end_date = "2022-12-31")
 
 }
 \keyword{data}

@@ -518,6 +518,7 @@ get_registered_trustees <- function(){
 #'
 #' This function retrieves issuing prices data from the debentures.com.br website for a specified date range.
 #'
+#' @param cetip_code The CETIP code for the desired storage data.
 #' @param start_date The start date for retrieving issuing prices data. Defaults to 5 days ago from the current date.
 #' @param end_date The end date for retrieving issuing prices data. Defaults to the current date.
 #'
@@ -528,18 +529,19 @@ get_registered_trustees <- function(){
 #' issuing_prices_data <- get_issuing_prices()
 #'
 #' # Retrieve issuing prices data for a specific date range
-#' issuing_prices_data <- get_issuing_prices(start_date = "2022-01-01", end_date = "2022-12-31")
+#' issuing_prices_data <- get_issuing_prices(cetip_code = 'AALM11', start_date = "2022-01-01", end_date = "2022-12-31")
 #'
 #' @importFrom utils read.table
 #'
 #' @keywords debentures finance issuing prices data
 #' @export
-get_issuing_prices <- function(start_date = Sys.Date()-5,
+get_issuing_prices <- function(cetip_code,
+                               start_date = Sys.Date()-5,
                                end_date = Sys.Date()){
-  url <- "http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/puhistorico_e.asp?op_exc=False&ativo=&dt_ini=%s&dt_fim=%s&Submit.x=&Submit.y="
+  url <- "http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/puhistorico_e.asp?op_exc=False&ativo=%s&dt_ini=%s&dt_fim=%s&Submit.x=&Submit.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
-  url <- base::sprintf(url, start_date, end_date)
+  url <- base::sprintf(url, cetip_code, start_date, end_date)
   tryCatch({
     res <- request_data(url=url)
     content <- get_request_content(res=res)
