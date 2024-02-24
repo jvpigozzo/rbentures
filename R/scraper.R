@@ -535,13 +535,13 @@ get_registered_trustees <- function(){
 #'
 #' @keywords debentures finance issuing prices data
 #' @export
-get_issuing_prices <- function(cetip_code,
+get_issuing_prices <- function(cetip_code = NULL,
                                start_date = Sys.Date()-5,
                                end_date = Sys.Date()){
   url <- "http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/puhistorico_e.asp?op_exc=False&ativo=%s&dt_ini=%s&dt_fim=%s&Submit.x=&Submit.y="
   start_date <- base::format(base::as.Date(start_date), "%d/%m/%Y")
   end_date <- base::format(base::as.Date(end_date), "%d/%m/%Y")
-  url <- base::sprintf(url, cetip_code, start_date, end_date)
+  url <- base::sprintf(url, ifelse(is.null(cetip_code), "", cetip_code), start_date, end_date)
   tryCatch({
     res <- request_data(url=url)
     content <- get_request_content(res=res)
