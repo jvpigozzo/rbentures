@@ -24,7 +24,7 @@ in a structured way.
 
 ## Installation
 
-You can install the development version of rbentures from
+You can install rbentures from
 [GitHub](https://github.com/) with:
 
 ``` r
